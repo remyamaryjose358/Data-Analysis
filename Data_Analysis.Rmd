@@ -1,0 +1,299 @@
+---
+title: "Data Analysis"
+author: "Remya Mary Jose, Sayani Chakraborty"
+date: "4/5/2021"
+output:
+  html_document: default
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Reading the data
+```{r}
+data = read.csv(file.choose())
+head(data)
+attach(data)
+```
+
+
+```{r}
+library(dplyr)
+
+par(mfrow=c(2,2))
+
+plot(arrange(data.frame(cbind(Total.number.of.species,Shannon.diversity..H.)),by = Total.number.of.species), type = "o", xlab = "Total number of species", ylab = "Shannon Diversity Index" )
+
+plot(arrange(data.frame(cbind(Total.number.of.native.species,Shannon.diversity..H.)), by = Total.number.of.native.species), type = "o", xlab = "Total number of native species", ylab = "Shannon Diversity Index" )
+
+plot(arrange(data.frame(cbind(Total.number.of.exotic.species,Shannon.diversity..H.)),by = Total.number.of.exotic.species), type = "o", xlab = "Total number of exotic species", ylab = "Shannon Diversity Index" )
+
+plot(arrange(data.frame(cbind(Total.number.of.invasive.species,Shannon.diversity..H.)),by = Total.number.of.invasive.species), type = "o", xlab = "Total number of invasive species", ylab = "Shannon Diversity Index" )
+```
+
+
+```{r}
+par(mfrow=c(1,2))
+
+plot(arrange(data.frame(cbind(Total.species.cover..,Shannon.diversity..H.)),by = Total.species.cover..), type = "o", xlab = "Total species cover", ylab = "Shannon Diversity Index" )
+
+plot(arrange(data.frame(cbind(Native.species..total.cover..,Shannon.diversity..H.)), by = Native.species..total.cover..), type = "o", xlab = "Native species cover", ylab = "Shannon Diversity Index" )
+```
+```{r}
+par(mfrow=c(1,2))
+plot(arrange(data.frame(cbind(Exotic.species.total.cover.,Shannon.diversity..H.)),by = Exotic.species.total.cover.), type = "o", xlab = "Exotic species cover", ylab = "Shannon Diversity Index" )
+
+plot(arrange(data.frame(cbind(Invasive.species.total.cover..,Shannon.diversity..H.)),by = Invasive.species.total.cover..), type = "o",xlab = "Invasive species cover", ylab = "Shannon Diversity Index" )
+```
+```{r}
+plot(arrange(data.frame(cbind(Mikania.micrantha.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.cover..), type = "p",pch=20, xlab = "Mikania micrantha species cover", ylab = "Shannon Diversity Index" )
+
+```
+
+
+```{r}
+
+plot(arrange(data.frame(cbind(Native.species.relative.cover..,Shannon.diversity..H.)), by = Native.species.relative.cover..), type = "p",pch=20, xlab = "Native species relative cover", ylab = "Shannon Diversity Index" )
+```
+```{r}
+plot(arrange(data.frame(cbind(Exotic..species.relative.cover..,Shannon.diversity..H.)),by = Exotic..species.relative.cover..), type = "p",pch=20, xlab = "Exotic species relative cover", ylab = "Shannon Diversity Index" )
+```
+```{r}
+par(mfrow=c(1,2))
+plot(arrange(data.frame(cbind(Invasive.species.relative.cover..,Shannon.diversity..H.)),by = Invasive.species.relative.cover..), type = "p",pch=20, "Invasive species relative cover", ylab = "Shannon Diversity Index" )
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..),type = "p",pch=20,xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+```
+# Regressions taking one variable at a time
+#by number of species
+
+```{r}
+fit_total_species = lm(Shannon.diversity..H.~Total.number.of.species)
+summary(fit_total_species)
+fit_native_species = lm(Shannon.diversity..H.~Total.number.of.native.species)
+summary(fit_native_species)
+fit_exotic_species = lm(Shannon.diversity..H.~Total.number.of.exotic.species)
+summary(fit_exotic_species)
+fit_invasive_species = lm(Shannon.diversity..H.~Total.number.of.invasive.species)
+summary(fit_invasive_species)
+```
+
+
+```{r}
+plot(arrange(data.frame(cbind(Total.number.of.species,Shannon.diversity..H.)),by = Total.number.of.species), type = "p",pch=20, xlab = "Total number of species", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_total_species)~Total.number.of.species, col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Total number \n of species)",cex = 0.7)
+
+plot(arrange(data.frame(cbind(Total.number.of.native.species,Shannon.diversity..H.)), by = Total.number.of.native.species), type = "p",pch=20, xlab = "Total number of native species", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_native_species)~Total.number.of.native.species, col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Total number of \n native species)",cex = 0.7)
+```
+
+
+```{r}
+
+plot(arrange(data.frame(cbind(Total.number.of.exotic.species,Shannon.diversity..H.)),by = Total.number.of.exotic.species), type = "p",pch=20, xlab = "Total number of exotic species", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_exotic_species)~Total.number.of.exotic.species, col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Total number of exotic species)",cex = 0.8)
+
+plot(arrange(data.frame(cbind(Total.number.of.invasive.species,Shannon.diversity..H.)),by = Total.number.of.invasive.species), type = "p",pch=20, xlab = "Total number of invasive species", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_invasive_species)~Total.number.of.invasive.species, col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Total number of invasive species)",cex = 0.8)
+```
+## by total cover
+
+```{r}
+fit_total_species_cover = lm(Shannon.diversity..H.~Total.species.cover..)
+summary(fit_total_species_cover)
+fit_native_species_ab_cover = lm(Shannon.diversity..H.~Native.species..total.cover..)
+summary(fit_native_species_ab_cover)
+fit_exotic_species_ab_cover = lm(Shannon.diversity..H.~Exotic.species.total.cover.)
+summary(fit_exotic_species_ab_cover)
+fit_invasive_species_ab_cover = lm(Shannon.diversity..H.~Invasive.species.total.cover..)
+summary(fit_invasive_species_ab_cover)
+fit_mik_ab_cover = lm(Shannon.diversity..H.~Mikania.micrantha.cover..)
+summary(fit_mik_ab_cover)
+```
+
+
+```{r}
+plot(arrange(data.frame(cbind(Total.species.cover..,Shannon.diversity..H.)),by = Total.species.cover..),type = "p",pch=20, xlab = "Total species cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_total_species_cover)~Total.species.cover.., col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Total species cover)",cex = 0.8)
+```
+
+
+```{r}
+plot(arrange(data.frame(cbind(Native.species..total.cover..,Shannon.diversity..H.)), by = Native.species..total.cover..),type = "p",pch=20,"Native species cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_native_species_ab_cover)~Native.species..total.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Native absolute cover)",cex = 0.8)
+
+plot(arrange(data.frame(cbind(Exotic.species.total.cover.,Shannon.diversity..H.)),by = Exotic.species.total.cover.),type = "p",pch=20, xlab = "Exotic species cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_exotic_species_ab_cover)~Exotic.species.total.cover.,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Exotic absolute cover)",cex = 0.8)
+```
+
+
+```{r}
+
+plot(arrange(data.frame(cbind(Invasive.species.total.cover..,Shannon.diversity..H.)),by = Invasive.species.total.cover..),type = "p",pch=20,xlab = "Invasive species cover", ylab = "Shannon Diversity Index" )
+lines(fitted.values(fit_invasive_species_ab_cover)~Invasive.species.total.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Invasive absolute cover)",cex = 0.8)
+
+plot(arrange(data.frame(cbind(Mikania.micrantha.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.cover..), type = "p",pch=20, xlab = "Mikania micrantha species cover", ylab = "Shannon Diversity Index"  )
+lines(fitted.values(fit_mik_ab_cover)~Mikania.micrantha.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Mikania micrantha \n absolute cover)",cex = 0.8)
+```
+
+# Quardratic Regression
+```{r}
+fit_mik_ab_cover1 = lm(Shannon.diversity..H.~ Mikania.micrantha.cover..+I(Mikania.micrantha.cover..^2))
+summary(fit_mik_ab_cover1)
+plt=arrange(data.frame(cbind(Mikania.micrantha.cover..,fitted.values(fit_mik_ab_cover1))),by=Mikania.micrantha.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.cover..),type = "p",pch=20, xlab = "Mikania micrantha species cover", ylab = "Shannon Diversity Index")
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Mikania micrantha absolute cover) \n +(b2*(Mikania micrantha absolute cover)^2)",cex = 0.8)
+```
+# By Relative Cover
+
+```{r}
+fit_native_species_re_cover = lm(Shannon.diversity..H.~Native.species.relative.cover..)
+summary(fit_native_species_re_cover)
+plot(arrange(data.frame(cbind(Native.species.relative.cover..,Shannon.diversity..H.)), by = Native.species.relative.cover..),type = "p",pch=20,"Native species cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_native_species_re_cover)~Native.species.relative.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Native relative cover)",cex = 0.8)
+
+
+fit_exotic_species_re_cover = lm(Shannon.diversity..H.~Exotic..species.relative.cover..)
+summary(fit_exotic_species_re_cover)
+plot(arrange(data.frame(cbind(Exotic..species.relative.cover..,Shannon.diversity..H.)),by = Exotic..species.relative.cover..),type = "p",pch=20, xlab = "Exotic species relative cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_exotic_species_re_cover)~Exotic..species.relative.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Exotic relative cover)",cex = 0.8)
+```
+```{r}
+fit_invasive_species_re_cover = lm(Shannon.diversity..H.~Invasive.species.relative.cover..)
+summary(fit_invasive_species_re_cover)
+plot(arrange(data.frame(cbind(Invasive.species.relative.cover..,Shannon.diversity..H.)),by = Invasive.species.relative.cover..),type = "p",pch=20, xlab = "Invasive species relative cover", ylab = "Shannon Diversity Index")
+lines(fitted.values(fit_invasive_species_re_cover)~Invasive.species.relative.cover..,col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Invasive relative cover)",cex = 0.8)
+```
+```{r}
+fit_mik_re_cover = lm(Shannon.diversity..H.~ Mikania.micrantha.relative.cover..)
+summary(fit_mik_re_cover)
+plt=arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,fitted.values(fit_mik_re_cover))),by=Mikania.micrantha.relative.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..), type = "p",pch=20, xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Mikania micrantha relative cover)",cex = 0.8)
+```
+
+
+```{r}
+fit_mik_re_cover1 = lm(Shannon.diversity..H.~ Mikania.micrantha.relative.cover..+I(Mikania.micrantha.relative.cover..^2))
+summary(fit_mik_re_cover1)
+plt=arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,fitted.values(fit_mik_re_cover1))),by=Mikania.micrantha.relative.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..), type = "p",pch=20, xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Mikania micrantha relative cover) \n (b2*(Mikania micrantha relative cover)^2)",cex = 0.8)
+```
+
+
+```{r}
+fit_mik_re_cover2 = lm(Shannon.diversity..H.~ I(Mikania.micrantha.relative.cover..^2))
+summary(fit_mik_re_cover2)
+plt=arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,fitted.values(fit_mik_re_cover2))),by=Mikania.micrantha.relative.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..), type = "p",pch=20, xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*(Mikania micrantha relative cover)^2)",cex = 0.8)
+```
+
+
+```{r}
+fit_mik_re_cover3 = lm(Shannon.diversity..H.~ I(Mikania.micrantha.relative.cover..^3))
+summary(fit_mik_re_cover3)
+plt=arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,fitted.values(fit_mik_re_cover3))),by=Mikania.micrantha.relative.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..), type = "p",pch=20, xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*(Mikania micrantha relative cover)^3)",cex = 0.8)
+```
+
+
+```{r}
+fit_mik_re_cover4 = lm(Shannon.diversity..H.~Mikania.micrantha.relative.cover..+I(Mikania.micrantha.relative.cover..^2)+I(Mikania.micrantha.relative.cover..^3))
+summary(fit_mik_re_cover4)
+plt=arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,fitted.values(fit_mik_re_cover4))),by=Mikania.micrantha.relative.cover..)
+plot(arrange(data.frame(cbind(Mikania.micrantha.relative.cover..,Shannon.diversity..H.)),by = Mikania.micrantha.relative.cover..), type = "p",pch=20, xlab = "Mikania micrantha species relative cover", ylab = "Shannon Diversity Index" )
+lines(plt[,2]~plt[,1],col = "blue")
+legend("topright",lty =c(1,1),col=c("blue","white"),legend = "H = b0+(b1*Mikania micrantha relative cover)+ \n (b2*(Mikania micrantha relative cover)^2)+ \n (b3*(Mikania micrantha relative cover)^3)",cex = 0.8, bty= "n")
+```
+
+## Two Covariates at a time
+##Number of species with its relative cover
+```{r}
+fit_naive_species_and_relative_cover = lm(Shannon.diversity..H.~Total.number.of.native.species+Native.species.relative.cover..)
+summary(fit_naive_species_and_relative_cover)
+fit_exotic_species_and_relative_cover  = lm(Shannon.diversity..H.~Total.number.of.exotic.species+Exotic..species.relative.cover..)
+summary(fit_exotic_species_and_relative_cover)
+fit_invasive_species_and_relative_cover = lm(Shannon.diversity..H.~Total.number.of.invasive.species+Invasive.species.relative.cover..)
+summary(fit_invasive_species_and_relative_cover)
+```
+# Number of Species+ Mikania micrantha relative cover
+```{r}
+fit_naive_species_Mikania_relative = lm(Shannon.diversity..H.~Total.number.of.native.species+Mikania.micrantha.relative.cover..)
+summary(fit_naive_species_Mikania_relative)
+fit_exotic_species_Mikania_relative = lm(Shannon.diversity..H.~Total.number.of.exotic.species+Mikania.micrantha.relative.cover..)
+summary(fit_exotic_species_Mikania_relative)
+fit_invasive_species_Mikania_relative = lm(Shannon.diversity..H.~Total.number.of.invasive.species+Mikania.micrantha.relative.cover..)
+summary(fit_invasive_species_Mikania_relative)
+fit_species_Mikania_relative=
+lm(Shannon.diversity..H.~Total.number.of.species+Mikania.micrantha.relative.cover..)
+summary(fit_species_Mikania_relative)
+```
+##Number of species with its total cover
+```{r}
+fit_native_species_and_total_cover = lm(Shannon.diversity..H.~Total.number.of.native.species+Native.species..total.cover..)
+summary(fit_native_species_and_total_cover)
+fit_exotic_species_and_total_cover  = lm(Shannon.diversity..H.~Total.number.of.exotic.species+Exotic.species.total.cover.)
+summary(fit_exotic_species_and_total_cover)
+fit_invasive_species_and_total_cover = lm(Shannon.diversity..H.~Total.number.of.invasive.species+Invasive.species.total.cover..)
+summary(fit_invasive_species_and_total_cover)
+```
+
+# Number of Species+ Mikania micrantha total cover
+```{r}
+fit_native_species_Mikania_cover = 
+  lm(Shannon.diversity..H.~Total.number.of.native.species+Mikania.micrantha.cover..)
+summary(fit_native_species_Mikania_cover)
+fit_exotic_species_Mikania_cover = lm(Shannon.diversity..H.~Total.number.of.exotic.species+Mikania.micrantha.cover..)
+summary(fit_exotic_species_Mikania_cover)
+fit_invasive_species_Mikania_cover = lm(Shannon.diversity..H.~Total.number.of.invasive.species+Mikania.micrantha.cover..)
+summary(fit_invasive_species_Mikania_cover)
+fit_species_Mikania_cover=
+lm(Shannon.diversity..H.~Total.number.of.species+Mikania.micrantha.cover..)
+summary(fit_species_Mikania_cover)
+```
+## Three Covariates at a time
+##Number of species with its relative cover+Mikania micrantha relative cover
+```{r}
+fit_native_3 = lm(Shannon.diversity..H.~Total.number.of.native.species+Native.species.relative.cover..+Mikania.micrantha.relative.cover..)
+summary(fit_native_3)
+fit_exotic_3  = 
+  lm(Shannon.diversity..H.~Total.number.of.exotic.species+Exotic..species.relative.cover..+Mikania.micrantha.relative.cover..)
+summary(fit_exotic_3)
+fit_invasive_3 = lm(Shannon.diversity..H.~Total.number.of.invasive.species+Invasive.species.relative.cover..+Mikania.micrantha.relative.cover..)
+summary(fit_invasive_3)
+```
+## Number of species with its total cover+Mikania micrantha total cover
+```{r}
+fit_native_4 =
+  lm(Shannon.diversity..H.~Total.number.of.native.species+Native.species..total.cover..+Mikania.micrantha.cover..)
+summary(fit_native_4)
+fit_exotic_4  =
+  lm(Shannon.diversity..H.~Total.number.of.exotic.species+Exotic.species.total.cover.+Mikania.micrantha.cover..)
+summary(fit_exotic_4)
+fit_invasive_4=
+  lm(Shannon.diversity..H.~Total.number.of.invasive.species+Invasive.species.total.cover..+Mikania.micrantha.cover..)
+summary(fit_invasive_4)
+```
